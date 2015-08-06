@@ -1,0 +1,9 @@
+{
+  "title": "zend-psr7bridge: PSR-7 <-> zend-http message conversion",
+  "content": [
+    "book/index.md",
+    "book/install.md",
+    "book/usage-examples.md"
+  ],
+  "target": "./html"
+}
