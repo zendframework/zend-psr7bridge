@@ -33,7 +33,7 @@ not need this more process-intensive data. By default, the `$shallow` flag is
 
   // Assume $controller is a Zend\Mvc\Controller\AbstractController instance.
   $result = $controller->dispatch(
-      PsrServerRequest::toZend($request),
+      Psr7ServerRequest::toZend($request),
       new Response()
   );
   ```
