@@ -6,7 +6,7 @@ The PSR-7 [ServerRequestInterface](https://github.com/php-fig/fig-standards/blob
 corresponds to the zend-http [PhpEnvironment\Request](https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/Request.php).
 
 To convert from a PSR-7 instance to a zend-http instance, use
-`Zend\Psr7Bridge\PsrServerRequest::toZend()`. This method takes up to two
+`Zend\Psr7Bridge\Psr7ServerRequest::toZend()`. This method takes up to two
 arguments:
 
 - the `ServerRequestInterface` instance to convert.
@@ -33,7 +33,7 @@ not need this more process-intensive data. By default, the `$shallow` flag is
 
   // Assume $controller is a Zend\Mvc\Controller\AbstractController instance.
   $result = $controller->dispatch(
-      PsrServerRequest::toZend($request),
+      Psr7ServerRequest::toZend($request),
       new Response()
   );
   ```
