@@ -44,6 +44,7 @@ class Request extends BaseRequest
 
         $this->setMethod($method);
         $this->setRequestUri((string) $uri);
+        $this->setUri((string) $uri);
 
         $headerCollection = $this->getHeaders();
         foreach ($headers as $name => $values) {
