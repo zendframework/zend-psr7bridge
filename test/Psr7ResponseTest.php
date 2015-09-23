@@ -58,7 +58,7 @@ class Psr7ResponseTest extends TestCase
     {
         $zendHeaders = $headers->toArray();
         foreach ($zendHeaders as $type => $value) {
-            $zendHeaders[$type] = split(', ', $value);
+            $zendHeaders[$type] = explode(', ', $value);
         }
         return $zendHeaders;
     }
