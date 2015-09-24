@@ -24,11 +24,11 @@ class Psr7ResponseTest extends TestCase
             [ '', 204, [] ],
             [ 'Test!', 200, [
                 'Content-Type'   => [ 'text/html; charset=utf-8' ],
-                'Content-Length' => [ 5 ]
+                'Content-Length' => [ '5' ]
             ]],
             [ 'Test!', 202, [
                 'Content-Type'   => [ 'text/html; level=1', 'text/html' ],
-                'Content-Length' => [ 5 ]
+                'Content-Length' => [ '5' ]
             ]],
         ];
     }
@@ -48,19 +48,13 @@ class Psr7ResponseTest extends TestCase
         $this->assertInstanceOf('Zend\Http\Response', $zendResponse);
         $this->assertEquals($body, (string) $zendResponse->getBody());
         $this->assertEquals($status, $zendResponse->getStatusCode());
-        $this->assertEquals($headers, $this->zendToPsr7Headers($zendResponse->getHeaders()));
-    }
 
-    /**
-     * Transform a Zend headers into Psr7 headers
-     */
-    protected function zendToPsr7Headers($headers)
-    {
-        $zendHeaders = $headers->toArray();
-        foreach ($zendHeaders as $type => $value) {
-            $zendHeaders[$type] = explode(', ', $value);
+        $zendHeaders = $zendResponse->getHeaders()->toArray();
+        foreach ($headers as $type => $values) {
+            foreach ($values as $value) {
+                $this->assertContains($value, $zendHeaders[$type]);
+            }
         }
-        return $zendHeaders;
     }
 
     public function getResponseString()
@@ -69,6 +63,7 @@ class Psr7ResponseTest extends TestCase
             [ "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\nTest!" ],
             [ "HTTP/1.1 204 OK\r\n\r\n" ],
             [ "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 5\r\n\r\nTest!" ],
+            [ "HTTP/1.1 200 OK\r\nContent-Type: text/html, text/xml\r\nContent-Length: 5\r\n\r\nTest!" ],
         ];
     }
 
@@ -83,6 +78,12 @@ class Psr7ResponseTest extends TestCase
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $psr7Response);
         $this->assertEquals((string) $psr7Response->getBody(), $zendResponse->getBody());
         $this->assertEquals($psr7Response->getStatusCode(), $zendResponse->getStatusCode());
-        $this->assertEquals($psr7Response->getHeaders(), $this->zendToPsr7Headers($zendResponse->getHeaders()));
+
+        $zendHeaders = $zendResponse->getHeaders()->toArray();
+        foreach ($psr7Response->getHeaders() as $type => $values) {
+            foreach ($values as $value) {
+                $this->assertContains($value, $zendHeaders[$type]);
+            }
+        }
     }
 }
