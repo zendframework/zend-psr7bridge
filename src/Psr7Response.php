@@ -29,13 +29,19 @@ final class Psr7Response
             $psr7Response->getProtocolVersion(),
             $psr7Response->getStatusCode(),
             $psr7Response->getReasonPhrase(),
-            self::getPsr7Headers($psr7Response),
+            self::psr7HeadersToString($psr7Response),
             (string) $psr7Response->getBody()
         );
         return ZendResponse::fromString($response);
     }
 
-    private static function getPsr7Headers(ResponseInterface $psr7Response)
+    /**
+     * Convert the PSR-7 headers to string
+     *
+     * @param ResponseInterface $psr7Response
+     * @return string
+     */
+    private static function psr7HeadersToString(ResponseInterface $psr7Response)
     {
         $headers = '';
         foreach ($psr7Response->getHeaders() as $name => $value) {

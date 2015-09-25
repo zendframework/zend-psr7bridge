@@ -10,6 +10,10 @@
 namespace Zend\Psr7Bridge;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Http\Request as ZendRequest;
+use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\Stream;
+use Zend\Diactoros\UploadedFile;
 
 final class Psr7ServerRequest
 {
@@ -76,6 +80,62 @@ final class Psr7ServerRequest
             ];
         }
         return $files;
+    }
+
+    /**
+     * Convert a Zend\Http file structure to PSR-7 uploaded files
+     *
+     * @param array
+     * @return UploadedFile[]
+     */
+    private static function convertFilesToUploaded(array $files)
+    {
+        if (!isset($files['file'])) {
+            return [];
+        }
+        $uploadedFiles = [];
+        foreach ($files['file'] as $name => $value) {
+            if (is_array($name)) {
+                $uploadedFiles[$name] = self::convertFilesToUploaded($value);
+                continue;
+            }
+            $uploadFiles[$name] = new UploadedFile(
+                $value['tmp_name'],
+                $value['size'],
+                $value['error'],
+                $value['name'],
+                $value['type']
+            );
+        }
+        return $uploadedFiles;
+    }
+
+    /**
+     * Convert a Zend\Http\Response in a PSR-7 response, using zend-diactoros
+     *
+     * @param  ZendRequest $zendRequest
+     * @return ServerRequest
+     */
+    public static function fromZend(ZendRequest $zendRequest)
+    {
+        $body = new Stream('php://memory', 'wb+');
+        $body->write($zendRequest->getContent());
+
+        $headers = empty($zendRequest->getHeaders()) ? [] : $zendRequest->getHeaders()->toArray();
+        $query   = empty($zendRequest->getQuery()) ? [] : $zendRequest->getQuery()->toArray();
+        $post    = empty($zendRequest->getPost()) ? [] : $zendRequest->getPost()->toArray();
+        $files   = empty($zendRequest->getFiles()) ? [] : $zendRequest->getFiles()->toArray();
+
+        $request = new ServerRequest(
+            [],
+            self::convertFilesToUploaded($files),
+            $zendRequest->getUriString(),
+            $zendRequest->getMethod(),
+            $body,
+            $headers
+        );
+        $request = $request->withQueryParams($query);
+        return $request->withParsedBody($post);
     }
 
     /**
