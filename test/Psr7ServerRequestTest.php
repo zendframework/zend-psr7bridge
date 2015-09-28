@@ -13,6 +13,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\UploadedFile;
 use Zend\Psr7Bridge\Psr7ServerRequest;
+use Zend\Http\Request as ZendRequest;
 
 class Psr7ServerRequestTest extends TestCase
 {
@@ -207,5 +208,99 @@ class Psr7ServerRequestTest extends TestCase
     public function testCustomHttpMethodsDoNotRaiseAnExceptionDuringConversionToZendRequest()
     {
         $this->markTestIncomplete('Functionality is written but untested');
+    }
+
+    public function getResponseData()
+    {
+        return [
+            [
+                'http://framework.zend.com/', // uri
+                'GET', // http method
+                [ 'Content-Type' => 'text/html' ], // headers
+                '<html></html>', // body
+                [ 'foo' => 'bar' ], // query params
+                [], // post
+                [], // files
+            ],
+            [
+                'http://framework.zend.com/', // uri
+                'POST', // http method
+                [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Cookie' => sprintf("PHPSESSID=%s;foo=bar", uniqid())
+                ], // headers
+                '', // body
+                [ 'foo' => 'bar' ], // query params
+                [ 'baz' => 'bar' ], // post
+                [], // files
+            ],
+            [
+                'http://framework.zend.com/', // uri
+                'POST', // http method
+                [ 'Content-Type' => 'multipart/form-data' ], // headers
+                file_get_contents(__FILE__), // body
+                [ 'foo' => 'bar' ], // query params
+                [], // post
+                [
+                    'file' => [
+                        'test1' => [
+                            'name' => 'test1.txt',
+                            'type' => 'text/plain',
+                            'tmp_name' => '/tmp/phpXXX',
+                            'error' => 0,
+                            'size' => 1,
+                        ],
+                        'test2' => [
+                            'name' => 'test2.txt',
+                            'type' => 'text/plain',
+                            'tmp_name' => '/tmp/phpYYY',
+                            'error' => 0,
+                            'size' => 1,
+                        ]
+                    ]
+                ], // files
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testFromZend($uri, $method, $headers, $body, $query, $post, $files)
+    {
+        $zendRequest = new ZendRequest();
+        $zendRequest->setUri($uri);
+        $zendRequest->setMethod($method);
+        $zendRequest->getHeaders()->addHeaders($headers);
+        $zendRequest->setContent($body);
+        $zendRequest->getQuery()->fromArray($query);
+        $zendRequest->getPost()->fromArray($post);
+        $zendRequest->getFiles()->fromArray($files);
+
+        $psr7Request = Psr7ServerRequest::fromZend($zendRequest);
+        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $psr7Request);
+        // URI
+        $this->assertEquals($uri, (string) $psr7Request->getUri());
+        // HTTP method
+        $this->assertEquals($method, $psr7Request->getMethod());
+        // headers
+        $psr7Headers = $psr7Request->getHeaders();
+        foreach ($headers as $key => $value) {
+            $this->assertContains($value, $psr7Headers[$key]);
+        }
+        // body
+        $this->assertEquals($body, (string) $psr7Request->getBody());
+        // query params
+        $this->assertEquals($query, $psr7Request->getQueryParams());
+        // post
+        $this->assertEquals($post, $psr7Request->getParsedBody());
+        // files
+        foreach ($psr7Request->getUploadedFiles() as $name => $upload) {
+            $this->assertEquals($files['file'][$name]['name'], $upload->getClientFilename());
+            $this->assertEquals($files['file'][$name]['type'], $upload->getClientMediaType());
+            $this->assertEquals($files['file'][$name]['size'], $upload->getSize());
+            $this->assertEquals($files['file'][$name]['tmp_name'], $upload->getStream());
+            $this->assertEquals($files['file'][$name]['error'], $upload->getError());
+        }
     }
 }
