@@ -57,6 +57,34 @@ final class Psr7ServerRequest
     }
 
     /**
+     * Convert a Zend\Http\Response in a PSR-7 response, using zend-diactoros
+     *
+     * @param  ZendRequest $zendRequest
+     * @return ServerRequest
+     */
+    public static function fromZend(ZendRequest $zendRequest)
+    {
+        $body = new Stream('php://memory', 'wb+');
+        $body->write($zendRequest->getContent());
+
+        $headers = empty($zendRequest->getHeaders()) ? [] : $zendRequest->getHeaders()->toArray();
+        $query   = empty($zendRequest->getQuery()) ? [] : $zendRequest->getQuery()->toArray();
+        $post    = empty($zendRequest->getPost()) ? [] : $zendRequest->getPost()->toArray();
+        $files   = empty($zendRequest->getFiles()) ? [] : $zendRequest->getFiles()->toArray();
+
+        $request = new ServerRequest(
+            [],
+            self::convertFilesToUploaded($files),
+            $zendRequest->getUriString(),
+            $zendRequest->getMethod(),
+            $body,
+            $headers
+        );
+        $request = $request->withQueryParams($query);
+        return $request->withParsedBody($post);
+    }
+
+    /**
      * Convert a PSR-7 uploaded files structure to a $_FILES structure
      *
      * @param \Psr\Http\Message\UploadedFileInterface[]
@@ -108,34 +136,6 @@ final class Psr7ServerRequest
             );
         }
         return $uploadedFiles;
-    }
-
-    /**
-     * Convert a Zend\Http\Response in a PSR-7 response, using zend-diactoros
-     *
-     * @param  ZendRequest $zendRequest
-     * @return ServerRequest
-     */
-    public static function fromZend(ZendRequest $zendRequest)
-    {
-        $body = new Stream('php://memory', 'wb+');
-        $body->write($zendRequest->getContent());
-
-        $headers = empty($zendRequest->getHeaders()) ? [] : $zendRequest->getHeaders()->toArray();
-        $query   = empty($zendRequest->getQuery()) ? [] : $zendRequest->getQuery()->toArray();
-        $post    = empty($zendRequest->getPost()) ? [] : $zendRequest->getPost()->toArray();
-        $files   = empty($zendRequest->getFiles()) ? [] : $zendRequest->getFiles()->toArray();
-
-        $request = new ServerRequest(
-            [],
-            self::convertFilesToUploaded($files),
-            $zendRequest->getUriString(),
-            $zendRequest->getMethod(),
-            $body,
-            $headers
-        );
-        $request = $request->withQueryParams($query);
-        return $request->withParsedBody($post);
     }
 
     /**

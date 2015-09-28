@@ -36,21 +36,6 @@ final class Psr7Response
     }
 
     /**
-     * Convert the PSR-7 headers to string
-     *
-     * @param ResponseInterface $psr7Response
-     * @return string
-     */
-    private static function psr7HeadersToString(ResponseInterface $psr7Response)
-    {
-        $headers = '';
-        foreach ($psr7Response->getHeaders() as $name => $value) {
-            $headers .= $name . ": " . implode(", ", $value) . "\r\n";
-        }
-        return $headers;
-    }
-
-    /**
      * Convert a Zend\Http\Response in a PSR-7 response, using zend-diactoros
      *
      * @param  ZendResponse $zendResponse
@@ -66,6 +51,21 @@ final class Psr7Response
             $zendResponse->getStatusCode(),
             $zendResponse->getHeaders()->toArray()
         );
+    }
+
+    /**
+     * Convert the PSR-7 headers to string
+     *
+     * @param ResponseInterface $psr7Response
+     * @return string
+     */
+    private static function psr7HeadersToString(ResponseInterface $psr7Response)
+    {
+        $headers = '';
+        foreach ($psr7Response->getHeaders() as $name => $value) {
+            $headers .= $name . ": " . implode(", ", $value) . "\r\n";
+        }
+        return $headers;
     }
 
     /**
