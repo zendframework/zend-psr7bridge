@@ -12,6 +12,7 @@ namespace ZendTest\Psr7Bridge;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\UploadedFile;
+use Zend\Http\Header\Cookie;
 use Zend\Psr7Bridge\Psr7ServerRequest;
 use Zend\Http\Request as ZendRequest;
 
@@ -302,5 +303,20 @@ class Psr7ServerRequestTest extends TestCase
             $this->assertEquals($files['file'][$name]['tmp_name'], $upload->getStream());
             $this->assertEquals($files['file'][$name]['error'], $upload->getError());
         }
+    }
+
+    public function testFromZendConvertsCookies()
+    {
+        $request = new ZendRequest();
+        $zendCookieData = ['foo' => 'test', 'bar' => 'test 2'];
+        $request->getHeaders()->addHeader(new Cookie($zendCookieData));
+
+        $psr7Request = Psr7ServerRequest::fromZend($request);
+
+        $psr7CookieData = $psr7Request->getCookieParams();
+
+        $this->assertEquals(count($zendCookieData), count($psr7CookieData));
+        $this->assertEquals($zendCookieData['foo'], $psr7CookieData['foo']);
+        $this->assertEquals($zendCookieData['bar'], $psr7CookieData['bar']);
     }
 }
