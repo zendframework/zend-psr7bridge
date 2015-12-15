@@ -81,6 +81,12 @@ final class Psr7ServerRequest
             $headers
         );
         $request = $request->withQueryParams($query);
+
+        $cookie = $zendRequest->getCookie();
+        if (false !== $cookie) {
+            $request = $request->withCookieParams($cookie->getArrayCopy());
+        }
+
         return $request->withParsedBody($post);
     }
 
