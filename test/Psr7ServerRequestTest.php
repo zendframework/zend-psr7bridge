@@ -248,14 +248,14 @@ class Psr7ServerRequestTest extends TestCase
                         'test1' => [
                             'name' => 'test1.txt',
                             'type' => 'text/plain',
-                            'tmp_name' => __DIR__.'/Psr7ResponseTest.php',
+                            'tmp_name' => __FILE__,
                             'error' => 0,
                             'size' => 1,
                         ],
                         'test2' => [
                             'name' => 'test2.txt',
                             'type' => 'text/plain',
-                            'tmp_name' => __DIR__.'/Psr7ServerRequestTest.php',
+                            'tmp_name' => __FILE__,
                             'error' => 0,
                             'size' => 1,
                         ]
@@ -273,7 +273,7 @@ class Psr7ServerRequestTest extends TestCase
                     'file' => [
                         'name' => 'test2.txt',
                         'type' => 'text/plain',
-                        'tmp_name' => __DIR__.'/Psr7ServerRequestTest.php',
+                        'tmp_name' => __FILE__,
                         'error' => 0,
                         'size' => 1,
                     ]
@@ -319,14 +319,16 @@ class Psr7ServerRequestTest extends TestCase
 
     private function compareUploadedFiles($zend, $psr7)
     {
-        if (!$psr7 instanceof UploadedFileInterface) {
-            $this->assertEquals(count($zend), count($psr7), "number of files should be same");
+        if (! $psr7 instanceof UploadedFileInterface) {
+            $this->assertEquals(count($zend), count($psr7), 'number of files should be same');
         }
+
         foreach ($zend as $name => $value) {
             if (is_array($value)) {
-                self::compareUploadedFiles($zend[$name], $psr7[$name]);
+                $this->compareUploadedFiles($zend[$name], $psr7[$name]);
                 continue;
             }
+
             $this->assertEquals($zend['name'], $psr7->getClientFilename());
             $this->assertEquals($zend['type'], $psr7->getClientMediaType());
             $this->assertEquals($zend['size'], $psr7->getSize());
