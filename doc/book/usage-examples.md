@@ -22,28 +22,26 @@ It is useful to omit these for purposes of routing, for instance, when you may
 not need this more process-intensive data. By default, the `$shallow` flag is
 `false`, meaning a full conversion is done.
 
-### Examples
+## Examples
 
-- Doing a full conversion:
+### Full conversion to zend-http request
 
-  ```php
-  <?php
-  use Zend\Http\PhpEnvironment\Response;
-  use Zend\Psr7Bridge\Psr7ServerRequest;
+```php
+use Zend\Http\PhpEnvironment\Response;
+use Zend\Psr7Bridge\Psr7ServerRequest;
 
-  // Assume $controller is a Zend\Mvc\Controller\AbstractController instance.
-  $result = $controller->dispatch(
-      Psr7ServerRequest::toZend($request),
-      new Response()
-  );
-  ```
+// Assume $controller is a Zend\Mvc\Controller\AbstractController instance.
+$result = $controller->dispatch(
+    Psr7ServerRequest::toZend($request),
+    new Response()
+);
+```
 
-- Doing a shallow conversion:
+### Shallow conversion to zend-http request
 
-  ```php
-  <?php
-  use Zend\Psr7Bridge\Psr7ServerRequest;
+```php
+use Zend\Psr7Bridge\Psr7ServerRequest;
 
-  // Assume $router is a Zend\Mvc\Router\Http\TreeRouteStack instance.
-  $match = $router->match(Psr7ServerRequest::toZend($request, true));
-  ```
+// Assume $router is a Zend\Router\Http\TreeRouteStack instance.
+$match = $router->match(Psr7ServerRequest::toZend($request, true));
+```

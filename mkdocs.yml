@@ -3,7 +3,6 @@ site_dir: doc/html
 pages:
     - index.md
     - Intro: intro.md
-    - Installation: install.md
     - Usage: usage-examples.md
 site_name: zend-psr7bridge
 site_description: zend-psr7bridge
