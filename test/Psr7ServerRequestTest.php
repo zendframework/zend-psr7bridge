@@ -10,6 +10,7 @@
 namespace ZendTest\Psr7Bridge;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\UploadedFileInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\UploadedFile;
 use Zend\Http\Header\Cookie;
@@ -247,17 +248,34 @@ class Psr7ServerRequestTest extends TestCase
                         'test1' => [
                             'name' => 'test1.txt',
                             'type' => 'text/plain',
-                            'tmp_name' => '/tmp/phpXXX',
+                            'tmp_name' => __FILE__,
                             'error' => 0,
                             'size' => 1,
                         ],
                         'test2' => [
                             'name' => 'test2.txt',
                             'type' => 'text/plain',
-                            'tmp_name' => '/tmp/phpYYY',
+                            'tmp_name' => __FILE__,
                             'error' => 0,
                             'size' => 1,
                         ]
+                    ]
+                ], // files
+            ],
+            [
+                'http://framework.zend.com/', // uri
+                'POST', // http method
+                [ 'Content-Type' => 'multipart/form-data' ], // headers
+                file_get_contents(__FILE__), // body
+                [ 'foo' => 'bar' ], // query params
+                [], // post
+                [
+                    'file' => [
+                        'name' => 'test2.txt',
+                        'type' => 'text/plain',
+                        'tmp_name' => __FILE__,
+                        'error' => 0,
+                        'size' => 1,
                     ]
                 ], // files
             ]
@@ -296,12 +314,27 @@ class Psr7ServerRequestTest extends TestCase
         // post
         $this->assertEquals($post, $psr7Request->getParsedBody());
         // files
-        foreach ($psr7Request->getUploadedFiles() as $name => $upload) {
-            $this->assertEquals($files['file'][$name]['name'], $upload->getClientFilename());
-            $this->assertEquals($files['file'][$name]['type'], $upload->getClientMediaType());
-            $this->assertEquals($files['file'][$name]['size'], $upload->getSize());
-            $this->assertEquals($files['file'][$name]['tmp_name'], $upload->getStream());
-            $this->assertEquals($files['file'][$name]['error'], $upload->getError());
+        $this->compareUploadedFiles($files, $psr7Request->getUploadedFiles());
+    }
+
+    private function compareUploadedFiles($zend, $psr7)
+    {
+        if (! $psr7 instanceof UploadedFileInterface) {
+            $this->assertEquals(count($zend), count($psr7), 'number of files should be same');
+        }
+
+        foreach ($zend as $name => $value) {
+            if (is_array($value)) {
+                $this->compareUploadedFiles($zend[$name], $psr7[$name]);
+                continue;
+            }
+
+            $this->assertEquals($zend['name'], $psr7->getClientFilename());
+            $this->assertEquals($zend['type'], $psr7->getClientMediaType());
+            $this->assertEquals($zend['size'], $psr7->getSize());
+            $this->assertEquals($zend['tmp_name'], $psr7->getStream()->getMetadata('uri'));
+            $this->assertEquals($zend['error'], $psr7->getError());
+            break;
         }
     }
 

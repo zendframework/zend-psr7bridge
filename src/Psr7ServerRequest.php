@@ -109,7 +109,7 @@ final class Psr7ServerRequest
                 'name'     => $upload->getClientFilename(),
                 'type'     => $upload->getClientMediaType(),
                 'size'     => $upload->getSize(),
-                'tmp_name' => $upload->getStream(),
+                'tmp_name' => $upload->getStream()->getMetadata('uri'),
                 'error'    => $upload->getError(),
             ];
         }
@@ -124,21 +124,18 @@ final class Psr7ServerRequest
      */
     private static function convertFilesToUploaded(array $files)
     {
-        if (!isset($files['file'])) {
-            return [];
-        }
         $uploadedFiles = [];
-        foreach ($files['file'] as $name => $value) {
-            if (is_array($name)) {
+        foreach ($files as $name => $value) {
+            if (is_array($value)) {
                 $uploadedFiles[$name] = self::convertFilesToUploaded($value);
                 continue;
             }
-            $uploadFiles[$name] = new UploadedFile(
-                $value['tmp_name'],
-                $value['size'],
-                $value['error'],
-                $value['name'],
-                $value['type']
+            return new UploadedFile(
+                $files['tmp_name'],
+                $files['size'],
+                $files['error'],
+                $files['name'],
+                $files['type']
             );
         }
         return $uploadedFiles;

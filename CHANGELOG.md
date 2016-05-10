@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.2.2 - 2016-05-10
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#7](https://github.com/zendframework/zend-psr7bridge/pull/7) fixes
+  the logic in `Psr7ServerRequest::convertUploadedFiles()` to ensure that the
+  `tmp_name` is provided to the `$_FILES` structure from the PSR-7 uploaded
+  files.
+- [#7](https://github.com/zendframework/zend-psr7bridge/pull/7) fixes
+  the logic in `Psr7ServerRequest::convertFilesToUploaded()` to iterate the
+  entire value provided it, instead of a fictitious `file` key.
+
 ## 0.2.1 - 2015-12-15
 
 ### Added
