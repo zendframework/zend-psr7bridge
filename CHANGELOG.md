@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#8](https://github.com/zendframework/zend-psr8bridge/pull/8) adds and
+  publishes the documentation to https://zendframework.github.io/zend-psr7bridge/
 
 ### Deprecated
 
