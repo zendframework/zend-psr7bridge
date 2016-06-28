@@ -1,48 +1,48 @@
 {
     "docs": [
         {
-            "location": "/", 
-            "text": "../../README.md", 
+            "location": "/",
+            "text": "../../README.md",
             "title": "Home"
-        }, 
+        },
         {
-            "location": "/intro/", 
-            "text": "Introduction\n\n\nCode for converting \nPSR-7\n messages to\n\nzend-http\n messages, and vice\nversa.\n\n\nNote: This project is a work in progress.", 
+            "location": "/intro/",
+            "text": "Introduction\n\n\nCode for converting \nPSR-7\n messages to\n\nzend-http\n messages, and vice\nversa.\n\n\nNote: This project is a work in progress.",
             "title": "Intro"
-        }, 
+        },
         {
-            "location": "/intro/#introduction", 
-            "text": "Code for converting  PSR-7  messages to zend-http  messages, and vice\nversa.  Note: This project is a work in progress.", 
+            "location": "/intro/#introduction",
+            "text": "Code for converting  PSR-7  messages to zend-http  messages, and vice\nversa.  Note: This project is a work in progress.",
             "title": "Introduction"
-        }, 
+        },
         {
-            "location": "/usage-examples/", 
-            "text": "Usage\n\n\nConverting a PSR-7 ServerRequestInterface to a Zend\\Http\\PhpEnvironment\\Request\n\n\nThe PSR-7 \nServerRequestInterface\n \ncorresponds to the zend-http \nPhpEnvironment\\Request\n.\n\n\nTo convert from a PSR-7 instance to a zend-http instance, use\n\nZend\\Psr7Bridge\\Psr7ServerRequest::toZend()\n. This method takes up to two\narguments:\n\n\n\n\nthe \nServerRequestInterface\n instance to convert.\n\n\na boolean flag indicating whether or not to do a \"shallow\" conversion.\n\n\n\n\nShallow conversions\n omit:\n\n\n\n\nbody parameters (\"post\" in zend-http)\n\n\nuploaded files\n\n\nthe body content\n\n\n\n\nIt is useful to omit these for purposes of routing, for instance, when you may\nnot need this more process-intensive data. By default, the \n$shallow\n flag is\n\nfalse\n, meaning a full conversion is done.\n\n\nExamples\n\n\nFull conversion to zend-http request\n\n\nuse Zend\\Http\\PhpEnvironment\\Response;\nuse Zend\\Psr7Bridge\\Psr7ServerRequest;\n\n// Assume $controller is a Zend\\Mvc\\Controller\\AbstractController instance.\n$result = $controller-\ndispatch(\n    Psr7ServerRequest::toZend($request),\n    new Response()\n);\n\n\n\n\nShallow conversion to zend-http request\n\n\nuse Zend\\Psr7Bridge\\Psr7ServerRequest;\n\n// Assume $router is a Zend\\Router\\Http\\TreeRouteStack instance.\n$match = $router-\nmatch(Psr7ServerRequest::toZend($request, true));", 
+            "location": "/usage-examples/",
+            "text": "Usage\n\n\nConverting a PSR-7 ServerRequestInterface to a Zend\\Http\\PhpEnvironment\\Request\n\n\nThe PSR-7 \nServerRequestInterface\n \ncorresponds to the zend-http \nPhpEnvironment\\Request\n.\n\n\nTo convert from a PSR-7 instance to a zend-http instance, use\n\nZend\\Psr7Bridge\\Psr7ServerRequest::toZend()\n. This method takes up to two\narguments:\n\n\n\n\nthe \nServerRequestInterface\n instance to convert.\n\n\na boolean flag indicating whether or not to do a \"shallow\" conversion.\n\n\n\n\nShallow conversions\n omit:\n\n\n\n\nbody parameters (\"post\" in zend-http)\n\n\nuploaded files\n\n\nthe body content\n\n\n\n\nIt is useful to omit these for purposes of routing, for instance, when you may\nnot need this more process-intensive data. By default, the \n$shallow\n flag is\n\nfalse\n, meaning a full conversion is done.\n\n\nExamples\n\n\nFull conversion to zend-http request\n\n\nuse Zend\\Http\\PhpEnvironment\\Response;\nuse Zend\\Psr7Bridge\\Psr7ServerRequest;\n\n// Assume $controller is a Zend\\Mvc\\Controller\\AbstractController instance.\n$result = $controller->dispatch(\n    Psr7ServerRequest::toZend($request),\n    new Response()\n);\n\n\n\n\nShallow conversion to zend-http request\n\n\nuse Zend\\Psr7Bridge\\Psr7ServerRequest;\n\n// Assume $router is a Zend\\Router\\Http\\TreeRouteStack instance.\n$match = $router->match(Psr7ServerRequest::toZend($request, true));",
             "title": "Usage"
-        }, 
+        },
         {
-            "location": "/usage-examples/#usage", 
-            "text": "", 
+            "location": "/usage-examples/#usage",
+            "text": "",
             "title": "Usage"
-        }, 
+        },
         {
-            "location": "/usage-examples/#converting-a-psr-7-serverrequestinterface-to-a-zendhttpphpenvironmentrequest", 
-            "text": "The PSR-7  ServerRequestInterface  \ncorresponds to the zend-http  PhpEnvironment\\Request .  To convert from a PSR-7 instance to a zend-http instance, use Zend\\Psr7Bridge\\Psr7ServerRequest::toZend() . This method takes up to two\narguments:   the  ServerRequestInterface  instance to convert.  a boolean flag indicating whether or not to do a \"shallow\" conversion.   Shallow conversions  omit:   body parameters (\"post\" in zend-http)  uploaded files  the body content   It is useful to omit these for purposes of routing, for instance, when you may\nnot need this more process-intensive data. By default, the  $shallow  flag is false , meaning a full conversion is done.", 
+            "location": "/usage-examples/#converting-a-psr-7-serverrequestinterface-to-a-zendhttpphpenvironmentrequest",
+            "text": "The PSR-7  ServerRequestInterface  \ncorresponds to the zend-http  PhpEnvironment\\Request .  To convert from a PSR-7 instance to a zend-http instance, use Zend\\Psr7Bridge\\Psr7ServerRequest::toZend() . This method takes up to two\narguments:   the  ServerRequestInterface  instance to convert.  a boolean flag indicating whether or not to do a \"shallow\" conversion.   Shallow conversions  omit:   body parameters (\"post\" in zend-http)  uploaded files  the body content   It is useful to omit these for purposes of routing, for instance, when you may\nnot need this more process-intensive data. By default, the  $shallow  flag is false , meaning a full conversion is done.",
             "title": "Converting a PSR-7 ServerRequestInterface to a Zend\\Http\\PhpEnvironment\\Request"
-        }, 
+        },
         {
-            "location": "/usage-examples/#examples", 
-            "text": "", 
+            "location": "/usage-examples/#examples",
+            "text": "",
             "title": "Examples"
-        }, 
+        },
         {
-            "location": "/usage-examples/#full-conversion-to-zend-http-request", 
-            "text": "use Zend\\Http\\PhpEnvironment\\Response;\nuse Zend\\Psr7Bridge\\Psr7ServerRequest;\n\n// Assume $controller is a Zend\\Mvc\\Controller\\AbstractController instance.\n$result = $controller- dispatch(\n    Psr7ServerRequest::toZend($request),\n    new Response()\n);", 
+            "location": "/usage-examples/#full-conversion-to-zend-http-request",
+            "text": "use Zend\\Http\\PhpEnvironment\\Response;\nuse Zend\\Psr7Bridge\\Psr7ServerRequest;\n\n// Assume $controller is a Zend\\Mvc\\Controller\\AbstractController instance.\n$result = $controller->dispatch(\n    Psr7ServerRequest::toZend($request),\n    new Response()\n);",
             "title": "Full conversion to zend-http request"
-        }, 
+        },
         {
-            "location": "/usage-examples/#shallow-conversion-to-zend-http-request", 
-            "text": "use Zend\\Psr7Bridge\\Psr7ServerRequest;\n\n// Assume $router is a Zend\\Router\\Http\\TreeRouteStack instance.\n$match = $router- match(Psr7ServerRequest::toZend($request, true));", 
+            "location": "/usage-examples/#shallow-conversion-to-zend-http-request",
+            "text": "use Zend\\Psr7Bridge\\Psr7ServerRequest;\n\n// Assume $router is a Zend\\Router\\Http\\TreeRouteStack instance.\n$match = $router->match(Psr7ServerRequest::toZend($request, true));",
             "title": "Shallow conversion to zend-http request"
         }
     ]
