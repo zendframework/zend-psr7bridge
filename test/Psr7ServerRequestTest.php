@@ -12,8 +12,10 @@ namespace ZendTest\Psr7Bridge;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\UploadedFile;
+use Zend\Http\PhpEnvironment\Request;
 use Zend\Psr7Bridge\Psr7ServerRequest;
 use Zend\Http\Request as ZendRequest;
+use Zend\Stdlib\Parameters;
 
 class Psr7ServerRequestTest extends TestCase
 {
@@ -302,5 +304,17 @@ class Psr7ServerRequestTest extends TestCase
             $this->assertEquals($files['file'][$name]['tmp_name'], $upload->getStream());
             $this->assertEquals($files['file'][$name]['error'], $upload->getError());
         }
+    }
+
+    public function testServerParams()
+    {
+        $zendRequest = new Request();
+        $zendRequest->setServer(new Parameters(['REMOTE_ADDR' => '127.0.0.1']));
+
+        $psr7Request = Psr7ServerRequest::fromZend($zendRequest);
+
+        $params = $psr7Request->getServerParams();
+        $this->assertArrayHasKey('REMOTE_ADDR', $params);
+        $this->assertSame('127.0.0.1', $params['REMOTE_ADDR']);
     }
 }

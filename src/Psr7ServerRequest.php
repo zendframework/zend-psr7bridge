@@ -10,6 +10,7 @@
 namespace Zend\Psr7Bridge;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Http\PhpEnvironment\Request as ZendPhpEnvironmentRequest;
 use Zend\Http\Request as ZendRequest;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Stream;
@@ -73,7 +74,7 @@ final class Psr7ServerRequest
         $files   = empty($zendRequest->getFiles()) ? [] : $zendRequest->getFiles()->toArray();
 
         $request = new ServerRequest(
-            [],
+            $zendRequest instanceof ZendPhpEnvironmentRequest ? iterator_to_array($zendRequest->getServer()) : [],
             self::convertFilesToUploaded($files),
             $zendRequest->getUriString(),
             $zendRequest->getMethod(),
