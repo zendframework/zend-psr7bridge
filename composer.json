@@ -35,7 +35,6 @@
         "zendframework/zend-diactoros": "^1.1"
     },
     "require-dev": {
-        "doctrine/instantiator": "^1.0.2",
         "phpunit/phpunit": "^5.7.15 || ^6.0.8",
         "zendframework/zend-coding-standard": "~1.0.0"
     },
