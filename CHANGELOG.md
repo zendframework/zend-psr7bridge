@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+### Changed
+
+- [#15](https://github.com/zendframework/zend-psr15bridge/pull/15) updates the
+  behavior of `Psr7ServerRequest::fromZend()` to check if the request is a
+  `Zend\Http\PhpEnvironment\Request` and, if so, use the return value of its
+  `getServer()` method to seed the PSR-7 request's server parameters.
+
 ### Deprecated
 
 - Nothing.
