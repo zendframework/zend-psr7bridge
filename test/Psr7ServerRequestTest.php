@@ -13,9 +13,11 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\UploadedFileInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\UploadedFile;
+use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\Header\Cookie;
 use Zend\Psr7Bridge\Psr7ServerRequest;
 use Zend\Http\Request as ZendRequest;
+use Zend\Stdlib\Parameters;
 
 class Psr7ServerRequestTest extends TestCase
 {
@@ -351,5 +353,17 @@ class Psr7ServerRequestTest extends TestCase
         $this->assertEquals(count($zendCookieData), count($psr7CookieData));
         $this->assertEquals($zendCookieData['foo'], $psr7CookieData['foo']);
         $this->assertEquals($zendCookieData['bar'], $psr7CookieData['bar']);
+    }
+
+    public function testServerParams()
+    {
+        $zendRequest = new Request();
+        $zendRequest->setServer(new Parameters(['REMOTE_ADDR' => '127.0.0.1']));
+
+        $psr7Request = Psr7ServerRequest::fromZend($zendRequest);
+
+        $params = $psr7Request->getServerParams();
+        $this->assertArrayHasKey('REMOTE_ADDR', $params);
+        $this->assertSame('127.0.0.1', $params['REMOTE_ADDR']);
     }
 }
