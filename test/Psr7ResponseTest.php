@@ -1,19 +1,18 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ * @see       http://github.com/zendframework/zend-psr7bridge for the canonical source repository
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-psr7bridge/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Psr7Bridge;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
-use Zend\Psr7Bridge\Psr7Response;
 use Zend\Http\Response as ZendResponse;
+use Zend\Psr7Bridge\Psr7Response;
 
 class Psr7ResponseTest extends TestCase
 {
@@ -42,10 +41,10 @@ class Psr7ResponseTest extends TestCase
         $stream->write($body);
 
         $psr7Response = new Response($stream, $status, $headers);
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $psr7Response);
+        $this->assertInstanceOf(ResponseInterface::class, $psr7Response);
 
         $zendResponse = Psr7Response::toZend($psr7Response);
-        $this->assertInstanceOf('Zend\Http\Response', $zendResponse);
+        $this->assertInstanceOf(ZendResponse::class, $zendResponse);
         $this->assertEquals($body, (string) $zendResponse->getBody());
         $this->assertEquals($status, $zendResponse->getStatusCode());
 
@@ -73,9 +72,9 @@ class Psr7ResponseTest extends TestCase
     public function testResponseFromZend($response)
     {
         $zendResponse = ZendResponse::fromString($response);
-        $this->assertInstanceOf('Zend\Http\Response', $zendResponse);
+        $this->assertInstanceOf(ZendResponse::class, $zendResponse);
         $psr7Response = Psr7Response::fromZend($zendResponse);
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $psr7Response);
+        $this->assertInstanceOf(ResponseInterface::class, $psr7Response);
         $this->assertEquals((string) $psr7Response->getBody(), $zendResponse->getBody());
         $this->assertEquals($psr7Response->getStatusCode(), $zendResponse->getStatusCode());
 

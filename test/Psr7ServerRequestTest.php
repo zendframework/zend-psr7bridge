@@ -1,22 +1,21 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @see       http://github.com/zendframework/zend-diactoros for the canonical source repository
- * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
+ * @see       http://github.com/zendframework/zend-psr7bridge for the canonical source repository
+ * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-psr7bridge/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\Psr7Bridge;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase as TestCase;
 use Psr\Http\Message\UploadedFileInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\UploadedFile;
-use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\Header\Cookie;
-use Zend\Psr7Bridge\Psr7ServerRequest;
+use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\Request as ZendRequest;
+use Zend\Psr7Bridge\Psr7ServerRequest;
+use Zend\Psr7Bridge\Zend\Request as BridgeRequest;
 use Zend\Stdlib\Parameters;
 
 class Psr7ServerRequestTest extends TestCase
@@ -72,12 +71,12 @@ class Psr7ServerRequestTest extends TestCase
         $zendRequest = Psr7ServerRequest::toZend($psr7Request, $shallow = true);
 
         // This needs to be a ZF2 request
-        $this->assertInstanceOf('Zend\Http\PhpEnvironment\Request', $zendRequest);
-        $this->assertInstanceOf('Zend\Http\Request', $zendRequest);
+        $this->assertInstanceOf(Request::class, $zendRequest);
+        $this->assertInstanceOf(ZendRequest::class, $zendRequest);
 
         // But, more specifically, an instance where we do not use superglobals
         // to inject it
-        $this->assertInstanceOf('Zend\Psr7Bridge\Zend\Request', $zendRequest);
+        $this->assertInstanceOf(BridgeRequest::class, $zendRequest);
 
         // Assert shallow conditions
         // (content, files, and body parameters are not injected)
@@ -99,7 +98,7 @@ class Psr7ServerRequestTest extends TestCase
 
         $this->assertTrue($zf2Headers->has('Cookie'));
         $cookie = $zf2Headers->get('Cookie');
-        $this->assertInstanceOf('Zend\Http\Header\Cookie', $cookie);
+        $this->assertInstanceOf(Cookie::class, $cookie);
         $this->assertTrue(isset($cookie['PHPSESSID']));
         $this->assertEquals($cookies['PHPSESSID'], $cookie['PHPSESSID']);
 
@@ -160,12 +159,12 @@ class Psr7ServerRequestTest extends TestCase
         $zendRequest = Psr7ServerRequest::toZend($psr7Request);
 
         // This needs to be a ZF2 request
-        $this->assertInstanceOf('Zend\Http\PhpEnvironment\Request', $zendRequest);
-        $this->assertInstanceOf('Zend\Http\Request', $zendRequest);
+        $this->assertInstanceOf(Request::class, $zendRequest);
+        $this->assertInstanceOf(ZendRequest::class, $zendRequest);
 
         // But, more specifically, an instance where we do not use superglobals
         // to inject it
-        $this->assertInstanceOf('Zend\Psr7Bridge\Zend\Request', $zendRequest);
+        $this->assertInstanceOf(BridgeRequest::class, $zendRequest);
 
         $this->assertEquals($uri, $zendRequest->getRequestUri());
         $this->assertEquals($method, $zendRequest->getMethod());
@@ -180,7 +179,7 @@ class Psr7ServerRequestTest extends TestCase
 
         $this->assertTrue($zf2Headers->has('Cookie'));
         $cookie = $zf2Headers->get('Cookie');
-        $this->assertInstanceOf('Zend\Http\Header\Cookie', $cookie);
+        $this->assertInstanceOf(Cookie::class, $cookie);
         $this->assertTrue(isset($cookie['PHPSESSID']));
         $this->assertEquals($cookies['PHPSESSID'], $cookie['PHPSESSID']);
 
@@ -299,7 +298,7 @@ class Psr7ServerRequestTest extends TestCase
         $zendRequest->getFiles()->fromArray($files);
 
         $psr7Request = Psr7ServerRequest::fromZend($zendRequest);
-        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $psr7Request);
+        $this->assertInstanceOf(ServerRequest::class, $psr7Request);
         // URI
         $this->assertEquals($uri, (string) $psr7Request->getUri());
         // HTTP method
