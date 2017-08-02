@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.2.3 - TBD
+## 1.0.0 - 2017-08-02
 
 ### Added
 
-- Nothing.
+- [#19](https://github.com/zendframework/zend-psr19bridge/pull/19) adds support
+  for PHP 7.1.
+
+- [#19](https://github.com/zendframework/zend-psr19bridge/pull/19) adds support
+  for PHP 7.2.
 
 ### Changed
 
@@ -21,7 +25,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#19](https://github.com/zendframework/zend-psr19bridge/pull/19) removes
+  support for PHP 5.5.
+
+- [#19](https://github.com/zendframework/zend-psr19bridge/pull/19) removes
+  support for HHVM.
 
 ### Fixed
 
