@@ -5,53 +5,44 @@ language: php
 cache:
   directories:
     - $HOME/.composer/cache
-    - vendor
-    - $HOME/.local
-    - zf-mkdoc-theme
 
 env:
   global:
-    - SITE_URL: https://zendframework.github.io/zend-psr7bridge
-    - GH_USER_NAME: "Matthew Weier O'Phinney"
-    - GH_USER_EMAIL: matthew@weierophinney.net
-    - GH_REF: github.com/zendframework/zend-psr7bridge.git
-    - secure: "QsS9xhQuW/8b3kiYNf1mAN2DpGkyqFGqcUZzv4wO+IMhq7NeE9HST7y5H0ByecJb822DBh6IZMEH3a75J0ekECFlYYdXj54ZzXghEAqL+R3uwmlxNGvmj1Q8N/VS5xt0N6qusN8a91tvXOsprKwzFY2v+/aS+gnaNIKha69Z9nlqcQnrAaeldWgBJcc//Y/sf0k0bzpqFScAwkgEVVk6PI1yuwXhnNiJa0e7YFbVJrk1uMQVNuKIUaQfQEMX4pI7RfhtD6/oOrwxt35ep35NNfEAG8UhAmv0vSZ9xEcepwu37cnS06Jn2g7PAQ0QYwrxv01OGrtprrD98SQaXJV9HcBDmbjh4L3+rVRR5j9moIob4jj20K3d7AmNzt5Ffe5v0TBk43pw7Ub0tFbwpDlcHKDqd97tPanUJso/TIEIprYap/5rY5HwDwvYn3xelKYWtvuJg3Qc9joJkRp2cuWXEjnKjlmeFW0YoX1Qv9fSuuWjJ9aMFqteZFQLxe64byQs0j64QiHSPMSGOT569JgxsFqcrfWkHKmvyiYQJknMWKN3DxdSlKk089jyA28QcSC8unEV25bhpCMEBFF1GOzX3IrcH12qf3EcP37xJiEVDkOAL0///+oxRQanqMPxynfUAmiY9+58GACeoaxqPM+yvpUBIDwnM3p2qG0VN1Hcn9I="
+    - COMPOSER_ARGS="--no-interaction"
+    - COVERAGE_DEPS="satooshi/php-coveralls"
+    - LEGACY_DEPS="phpunit/phpunit"
 
 matrix:
   include:
-    - php: 5.5
-      env:
-        - CS_CHECK=true
     - php: 5.6
+    - php: 7
       env:
         - TEST_COVERAGE=true
-        - DEPLOY_DOCS="$(if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n 'true' ; else echo -n 'false' ; fi)"
-        - PATH="$HOME/.local/bin:$PATH"
-    - php: 7
-    - php: hhvm 
+    - php: 7.1
+      env:
+        - CS_CHECK=true
+    - php: nightly
   allow_failures:
-    - php: hhvm
-
-notifications:
-  irc: "irc.freenode.org#zftalk.dev"
-  email: false
+    - php: nightly
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
-  - composer self-update
-  - if [[ $TEST_COVERAGE == 'true' ]]; then composer require --dev satooshi/php-coveralls:^1.0 ; fi
+  - travis_retry composer self-update
 
 install:
-  - travis_retry composer install --no-interaction --ignore-platform-reqs
-  - composer info -i
+  - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
+  - if [[ $TRAVIS_PHP_VERSION =~ ^5.6 ]]; then travis_retry composer update $COMPOSER_ARGS --with-dependencies $LEGACY_DEPS ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
+  - stty cols 120
+  - export COLUMNS=120
+  - composer show
 
 script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
   - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
-  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
-
-after_success:
-  - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
 
 after_script:
   - if [[ $TEST_COVERAGE == 'true' ]]; then composer upload-coverage ; fi
+
+notifications:
+  email: false
