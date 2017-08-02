@@ -27,7 +27,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^4.7",
-        "squizlabs/php_codesniffer": "^2.3"
+        "zendframework/zend-coding-standard": "~1.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -38,5 +38,16 @@
         "psr-4": {
             "ZendTest\\Psr7Bridge\\": "test/"
         }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "upload-coverage": "coveralls -v"
     }
 }
