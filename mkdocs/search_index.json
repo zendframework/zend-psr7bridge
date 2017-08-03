@@ -7,12 +7,12 @@
         },
         {
             "location": "/intro/",
-            "text": "Introduction\n\n\nCode for converting \nPSR-7\n messages to\n\nzend-http\n messages, and vice\nversa.\n\n\nNote: This project is a work in progress.",
+            "text": "Introduction\n\n\nCode for converting \nPSR-7\n messages to\n\nzend-http\n messages, and vice\nversa.",
             "title": "Intro"
         },
         {
             "location": "/intro/#introduction",
-            "text": "Code for converting  PSR-7  messages to zend-http  messages, and vice\nversa.  Note: This project is a work in progress.",
+            "text": "Code for converting  PSR-7  messages to zend-http  messages, and vice\nversa.",
             "title": "Introduction"
         },
         {
