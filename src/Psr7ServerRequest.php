@@ -113,7 +113,7 @@ final class Psr7ServerRequest
                 'name'     => $upload->getClientFilename(),
                 'type'     => $upload->getClientMediaType(),
                 'size'     => $upload->getSize(),
-                'tmp_name' => !$isUploadError ? $upload->getStream()->getMetadata('uri') : '',
+                'tmp_name' => ! $isUploadError ? $upload->getStream()->getMetadata('uri') : '',
                 'error'    => $uploadError,
             ];
         }
