@@ -19,20 +19,16 @@ class Psr7ResponseTest extends TestCase
     public function getResponseData()
     {
         return [
-            ['Test!', 200, ['Content-Type' => ['text/html']]],
-            ['', 204, []],
-            [
-                'Test!', 200, [
-                'Content-Type'   => ['text/html; charset=utf-8'],
-                'Content-Length' => ['5'],
-            ],
-            ],
-            [
-                'Test!', 202, [
-                'Content-Type'   => ['text/html; level=1', 'text/html'],
-                'Content-Length' => ['5'],
-            ],
-            ],
+            [ 'Test!', 200, [ 'Content-Type' => [ 'text/html' ] ] ],
+            [ '', 204, [] ],
+            [ 'Test!', 200, [
+                'Content-Type'   => [ 'text/html; charset=utf-8' ],
+                'Content-Length' => [ '5' ]
+            ]],
+            [ 'Test!', 202, [
+                'Content-Type'   => [ 'text/html; level=1', 'text/html' ],
+                'Content-Length' => [ '5' ]
+            ]],
         ];
     }
 
@@ -87,10 +83,10 @@ class Psr7ResponseTest extends TestCase
     public function getResponseString()
     {
         return [
-            ["HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\nTest!"],
-            ["HTTP/1.1 204 OK\r\n\r\n"],
-            ["HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 5\r\n\r\nTest!"],
-            ["HTTP/1.1 200 OK\r\nContent-Type: text/html, text/xml\r\nContent-Length: 5\r\n\r\nTest!"],
+            [ "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\nTest!" ],
+            [ "HTTP/1.1 204 OK\r\n\r\n" ],
+            [ "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 5\r\n\r\nTest!" ],
+            [ "HTTP/1.1 200 OK\r\nContent-Type: text/html, text/xml\r\nContent-Length: 5\r\n\r\nTest!" ],
         ];
     }
 
