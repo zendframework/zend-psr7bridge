@@ -10,6 +10,7 @@ namespace ZendTest\Psr7Bridge;
 use PHPUnit\Framework\TestCase as TestCase;
 use Psr\Http\Message\UploadedFileInterface;
 use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\UploadedFile;
 use Zend\Http\Header\Cookie;
 use Zend\Http\PhpEnvironment\Request;
@@ -38,7 +39,7 @@ class Psr7ServerRequestTest extends TestCase
         ];
 
         $uri = 'https://example.com/foo/bar?baz=bat';
-
+        $requestUri = '/foo/bar?baz=bat';
         $method = 'PATCH';
 
         $body = fopen(__FILE__, 'r');
@@ -85,7 +86,8 @@ class Psr7ServerRequestTest extends TestCase
         $this->assertCount(0, $zendRequest->getPost());
 
         // Assert all other Request metadata
-        $this->assertEquals($uri, $zendRequest->getRequestUri());
+        $this->assertEquals($requestUri, $zendRequest->getRequestUri());
+        $this->assertEquals($uri, $zendRequest->getUri()->toString());
         $this->assertEquals($method, $zendRequest->getMethod());
 
         $zf2Headers = $zendRequest->getHeaders();
@@ -126,6 +128,7 @@ class Psr7ServerRequestTest extends TestCase
         ];
 
         $uri = 'https://example.com/foo/bar?baz=bat';
+        $requestUri = preg_replace('#^[^/:]+://[^/]+#', '', $uri);
 
         $method = 'PATCH';
 
@@ -166,7 +169,8 @@ class Psr7ServerRequestTest extends TestCase
         // to inject it
         $this->assertInstanceOf(BridgeRequest::class, $zendRequest);
 
-        $this->assertEquals($uri, $zendRequest->getRequestUri());
+        $this->assertEquals($requestUri, $zendRequest->getRequestUri());
+        //$this->assertEquals($uri, $zendRequest->getUri()->toString());
         $this->assertEquals($method, $zendRequest->getMethod());
 
         $zf2Headers = $zendRequest->getHeaders();
@@ -364,5 +368,27 @@ class Psr7ServerRequestTest extends TestCase
         $params = $psr7Request->getServerParams();
         $this->assertArrayHasKey('REMOTE_ADDR', $params);
         $this->assertSame('127.0.0.1', $params['REMOTE_ADDR']);
+    }
+
+    /**
+     * @see https://github.com/zendframework/zend-psr7bridge/issues/27
+     */
+    public function testBaseUrlFromGlobal()
+    {
+        $_SERVER = [
+            'HTTP_HOST' => 'host.com',
+            'SERVER_PORT' => '80',
+            'REQUEST_URI' => '/test/path/here?foo=bar',
+            'SCRIPT_FILENAME' => '/c/root/test/path/here/index.php',
+            'PHP_SELF' => '/test/path/here/index.php',
+            'SCRIPT_NAME' => '/test/path/here/index.php',
+            'QUERY_STRING' => 'foo=bar'
+        ];
+
+        $psr7 = ServerRequestFactory::fromGlobals();
+        $converted = Psr7ServerRequest::toZend($psr7);
+        $zendRequest = new Request();
+
+        $this->assertSame($zendRequest->getBaseUrl(), $converted->getBaseUrl());
     }
 }
