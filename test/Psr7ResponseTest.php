@@ -61,7 +61,7 @@ class Psr7ResponseTest extends TestCase
      */
     public function testResponseToZendFromRealStream($body, $status, $headers)
     {
-        $stream = new Stream(__DIR__ . '/../test.file', 'wb+');
+        $stream = new Stream(tempnam(sys_get_temp_dir(), 'Test'), 'wb+');
         $stream->write($body);
 
         $psr7Response = new Response($stream, $status, $headers);
@@ -78,8 +78,6 @@ class Psr7ResponseTest extends TestCase
                 $this->assertContains($value, $zendHeaders[$type]);
             }
         }
-
-        unlink(__DIR__ . '/../test.file');
     }
 
     public function getResponseString()
