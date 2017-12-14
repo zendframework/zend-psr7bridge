@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#26](https://github.com/zendframework/zend-psr7bridge/pull/26) fixes the
   Stream response from a PSR-7 Stream object
+- [#28](https://github.com/zendframework/zend-psr7bridge/pull/28) fixes the
+  baseUrl from a PSR-7 Server request
 
 ## 1.0.0 - 2017-08-02
 
