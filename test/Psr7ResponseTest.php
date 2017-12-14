@@ -45,7 +45,31 @@ class Psr7ResponseTest extends TestCase
 
         $zendResponse = Psr7Response::toZend($psr7Response);
         $this->assertInstanceOf(ZendResponse::class, $zendResponse);
-        $this->assertEquals($body, (string) $zendResponse->getBody());
+        $this->assertEquals($body, (string)$zendResponse->getBody());
+        $this->assertEquals($status, $zendResponse->getStatusCode());
+
+        $zendHeaders = $zendResponse->getHeaders()->toArray();
+        foreach ($headers as $type => $values) {
+            foreach ($values as $value) {
+                $this->assertContains($value, $zendHeaders[$type]);
+            }
+        }
+    }
+
+    /**
+     * @dataProvider getResponseData
+     */
+    public function testResponseToZendFromRealStream($body, $status, $headers)
+    {
+        $stream = new Stream(tempnam(sys_get_temp_dir(), 'Test'), 'wb+');
+        $stream->write($body);
+
+        $psr7Response = new Response($stream, $status, $headers);
+        $this->assertInstanceOf(ResponseInterface::class, $psr7Response);
+
+        $zendResponse = Psr7Response::toZend($psr7Response);
+        $this->assertInstanceOf(ZendResponse::class, $zendResponse);
+        $this->assertEquals($body, (string)$zendResponse->getBody());
         $this->assertEquals($status, $zendResponse->getStatusCode());
 
         $zendHeaders = $zendResponse->getHeaders()->toArray();
@@ -75,7 +99,7 @@ class Psr7ResponseTest extends TestCase
         $this->assertInstanceOf(ZendResponse::class, $zendResponse);
         $psr7Response = Psr7Response::fromZend($zendResponse);
         $this->assertInstanceOf(ResponseInterface::class, $psr7Response);
-        $this->assertEquals((string) $psr7Response->getBody(), $zendResponse->getBody());
+        $this->assertEquals((string)$psr7Response->getBody(), $zendResponse->getBody());
         $this->assertEquals($psr7Response->getStatusCode(), $zendResponse->getStatusCode());
 
         $zendHeaders = $zendResponse->getHeaders()->toArray();
