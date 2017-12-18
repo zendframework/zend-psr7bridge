@@ -44,6 +44,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+- [#23](https://github.com/zendframework/zend-psr7bridge/pull/23) fixed the
+  upload of a file when error is not UPLOAD_ERR_OK
 - [#26](https://github.com/zendframework/zend-psr7bridge/pull/26) fixes the
   Stream response from a PSR-7 Stream object
 - [#28](https://github.com/zendframework/zend-psr7bridge/pull/28) fixes the
