@@ -7,6 +7,7 @@
 
 namespace ZendTest\Psr7Bridge;
 
+use Error;
 use PHPUnit\Framework\TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
@@ -108,5 +109,15 @@ class Psr7ResponseTest extends TestCase
                 $this->assertContains($value, $zendHeaders[$type]);
             }
         }
+    }
+
+    /**
+     * @requires PHP 7
+     */
+    public function testPrivateConstruct()
+    {
+        $this->expectException(Error::class);
+        $this->expectExceptionMessage(sprintf('Call to private %s::__construct', Psr7Response::class));
+        new Psr7Response();
     }
 }

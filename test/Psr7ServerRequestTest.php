@@ -7,6 +7,7 @@
 
 namespace ZendTest\Psr7Bridge;
 
+use Error;
 use PHPUnit\Framework\TestCase as TestCase;
 use Psr\Http\Message\UploadedFileInterface;
 use Zend\Diactoros\ServerRequest;
@@ -493,5 +494,15 @@ class Psr7ServerRequestTest extends TestCase
         $zendRequest = new Request();
 
         $this->assertSame($zendRequest->getBaseUrl(), $converted->getBaseUrl());
+    }
+
+    /**
+     * @requires PHP 7
+     */
+    public function testPrivateConstruct()
+    {
+        $this->expectException(Error::class);
+        $this->expectExceptionMessage(sprintf('Call to private %s::__construct', Psr7ServerRequest::class));
+        new Psr7ServerRequest();
     }
 }
