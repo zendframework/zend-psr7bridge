@@ -170,7 +170,7 @@ class Psr7ServerRequestTest extends TestCase
         $this->assertInstanceOf(BridgeRequest::class, $zendRequest);
 
         $this->assertEquals($requestUri, $zendRequest->getRequestUri());
-        //$this->assertEquals($uri, $zendRequest->getUri()->toString());
+        $this->assertEquals($uri, $zendRequest->getUri()->toString());
         $this->assertEquals($method, $zendRequest->getMethod());
 
         $zf2Headers = $zendRequest->getHeaders();
@@ -226,6 +226,7 @@ class Psr7ServerRequestTest extends TestCase
         ];
 
         $uri = 'https://example.com/foo/bar?baz=bat';
+        $requestUri = preg_replace('#^[^/:]+://[^/]+#', '', $uri);
 
         $method = 'PATCH';
 
@@ -266,7 +267,8 @@ class Psr7ServerRequestTest extends TestCase
         // to inject it
         $this->assertInstanceOf(BridgeRequest::class, $zendRequest);
 
-        $this->assertEquals($uri, $zendRequest->getRequestUri());
+        $this->assertEquals($requestUri, $zendRequest->getRequestUri());
+        $this->assertEquals($uri, $zendRequest->getUri()->toString());
         $this->assertEquals($method, $zendRequest->getMethod());
 
         $zf2Headers = $zendRequest->getHeaders();
