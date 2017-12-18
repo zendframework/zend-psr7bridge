@@ -170,7 +170,7 @@ class Psr7ServerRequestTest extends TestCase
         $this->assertInstanceOf(BridgeRequest::class, $zendRequest);
 
         $this->assertEquals($requestUri, $zendRequest->getRequestUri());
-        //$this->assertEquals($uri, $zendRequest->getUri()->toString());
+        $this->assertEquals($uri, $zendRequest->getUri()->toString());
         $this->assertEquals($method, $zendRequest->getMethod());
 
         $zf2Headers = $zendRequest->getHeaders();
@@ -198,6 +198,109 @@ class Psr7ServerRequestTest extends TestCase
         $this->assertArrayHasKey('size', $upload);
         $this->assertArrayHasKey('tmp_name', $upload);
         $this->assertArrayHasKey('error', $upload);
+
+        $this->assertEquals($bodyParams, $zendRequest->getPost()->getArrayCopy());
+
+        $test = $zendRequest->getServer();
+        $this->assertCount(2, $test);
+        $this->assertEquals(__FILE__, $test->get('SCRIPT_NAME'));
+        $this->assertEquals(__FILE__, $test->get('SCRIPT_FILENAME'));
+    }
+
+
+    public function testCanCastErroneousUploadToZendRequest()
+    {
+        $server = [
+            'SCRIPT_NAME'     => __FILE__,
+            'SCRIPT_FILENAME' => __FILE__,
+        ];
+
+        $uploadedFiles = [
+            'foo' => new UploadedFile(
+                __FILE__,
+                0,
+                UPLOAD_ERR_NO_FILE,
+                '',
+                ''
+            ),
+        ];
+
+        $uri = 'https://example.com/foo/bar?baz=bat';
+        $requestUri = preg_replace('#^[^/:]+://[^/]+#', '', $uri);
+
+        $method = 'PATCH';
+
+        $body = fopen(__FILE__, 'r');
+
+        $headers = [
+            'Host'         => [ 'example.com' ],
+            'X-Foo'        => [ 'bar' ],
+            'Content-Type' => [ 'multipart/form-data' ],
+        ];
+
+        $cookies = [
+            'PHPSESSID' => uniqid(),
+        ];
+
+        $bodyParams = [
+            'foo' => 'bar',
+        ];
+
+        $psr7Request = (new ServerRequest(
+            $server,
+            $uploadedFiles,
+            $uri,
+            $method,
+            $body,
+            $headers
+        ))
+            ->withCookieParams($cookies)
+            ->withParsedBody($bodyParams);
+
+        $zendRequest = Psr7ServerRequest::toZend($psr7Request);
+
+        // This needs to be a ZF2 request
+        $this->assertInstanceOf(Request::class, $zendRequest);
+        $this->assertInstanceOf(ZendRequest::class, $zendRequest);
+
+        // But, more specifically, an instance where we do not use superglobals
+        // to inject it
+        $this->assertInstanceOf(BridgeRequest::class, $zendRequest);
+
+        $this->assertEquals($requestUri, $zendRequest->getRequestUri());
+        $this->assertEquals($uri, $zendRequest->getUri()->toString());
+        $this->assertEquals($method, $zendRequest->getMethod());
+
+        $zf2Headers = $zendRequest->getHeaders();
+        $this->assertTrue($zf2Headers->has('Host'));
+        $this->assertTrue($zf2Headers->has('X-Foo'));
+        $this->assertTrue($zf2Headers->has('Content-Type'));
+        $this->assertEquals('example.com', $zf2Headers->get('Host')->getFieldValue());
+        $this->assertEquals('bar', $zf2Headers->get('X-Foo')->getFieldValue());
+        $this->assertEquals('multipart/form-data', $zf2Headers->get('Content-Type')->getFieldValue());
+
+        $this->assertTrue($zf2Headers->has('Cookie'));
+        $cookie = $zf2Headers->get('Cookie');
+        $this->assertInstanceOf(Cookie::class, $cookie);
+        $this->assertTrue(isset($cookie['PHPSESSID']));
+        $this->assertEquals($cookies['PHPSESSID'], $cookie['PHPSESSID']);
+
+        $this->assertEquals(file_get_contents(__FILE__), (string) $zendRequest->getContent());
+
+        $test = $zendRequest->getFiles();
+        $this->assertCount(1, $test);
+        $this->assertTrue(isset($test['foo']));
+        $upload = $test->get('foo');
+        $this->assertArrayHasKey('name', $upload);
+        $this->assertEquals($upload['name'], '');
+        $this->assertArrayHasKey('type', $upload);
+        $this->assertEquals($upload['type'], '');
+        $this->assertArrayHasKey('size', $upload);
+        $this->assertEquals($upload['size'], 0);
+        $this->assertArrayHasKey('tmp_name', $upload);
+        $this->assertEquals($upload['tmp_name'], '');
+        $this->assertArrayHasKey('error', $upload);
+        $this->assertEquals($upload['error'], UPLOAD_ERR_NO_FILE);
 
         $this->assertEquals($bodyParams, $zendRequest->getPost()->getArrayCopy());
 

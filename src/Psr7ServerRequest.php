@@ -106,12 +106,15 @@ final class Psr7ServerRequest
                 continue;
             }
 
+            $uploadError = $upload->getError();
+            $isUploadError = $uploadError !== UPLOAD_ERR_OK;
+
             $files[$name] = [
                 'name'     => $upload->getClientFilename(),
                 'type'     => $upload->getClientMediaType(),
                 'size'     => $upload->getSize(),
-                'tmp_name' => $upload->getStream()->getMetadata('uri'),
-                'error'    => $upload->getError(),
+                'tmp_name' => ! $isUploadError ? $upload->getStream()->getMetadata('uri') : '',
+                'error'    => $uploadError,
             ];
         }
         return $files;
