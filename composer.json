@@ -1,32 +1,22 @@
 {
     "name": "zendframework/zend-psr7bridge",
-    "description": "PSR-7 <-> Zend\\Http bridge",
-    "type": "library",
+    "description": "PSR-7 &lt;-&gt; zend-http message conversions",
     "license": "BSD-3-Clause",
     "keywords": [
+        "zf",
         "http",
         "psr",
         "psr-7",
         "zend",
         "zendframework"
     ],
-    "homepage": "https://github.com/zendframework/zend-psr7bridge",
     "support": {
-        "docs": "https://docs.zendframework.com/zend-psr7bridge",
-        "forum": "https://discourse.zendframework.com/c/questions/components",
+        "docs": "https://docs.zendframework.com/zend-psr7bridge/",
         "issues": "https://github.com/zendframework/zend-psr7bridge/issues",
+        "source": "https://github.com/zendframework/zend-psr7bridge",
         "rss": "https://github.com/zendframework/zend-psr7bridge/releases.atom",
         "slack": "https://zendframework-slack.herokuapp.com",
-        "source": "https://github.com/zendframework/zend-psr7bridge"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev",
-            "dev-develop": "1.1-dev"
-        }
+        "forum": "https://discourse.zendframework.com/c/questions/components"
     },
     "require": {
         "php": "^5.6 || ^7.0",
@@ -46,6 +36,15 @@
     "autoload-dev": {
         "psr-4": {
             "ZendTest\\Psr7Bridge\\": "test/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev",
+            "dev-develop": "1.1-dev"
         }
     },
     "scripts": {

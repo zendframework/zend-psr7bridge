@@ -2,7 +2,7 @@
 
 ## Converting a PSR-7 ServerRequestInterface to a Zend\Http\PhpEnvironment\Request
 
-The PSR-7 [ServerRequestInterface](http://www.php-fig.org/psr/psr-7/#321-psrhttpmessageserverrequestinterface) 
+The PSR-7 [ServerRequestInterface](http://www.php-fig.org/psr/psr-7/#321-psrhttpmessageserverrequestinterface)
 corresponds to the zend-http [PhpEnvironment\Request](https://github.com/zendframework/zend-http/blob/master/src/PhpEnvironment/Request.php).
 
 To convert from a PSR-7 instance to a zend-http instance, use
