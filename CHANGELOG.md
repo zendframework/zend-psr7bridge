@@ -44,7 +44,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#35](https://github.com/zendframework/zend-psr7bridge/pull/35) fixes the
+  Response from a PSR-7 Stream object with php://memory stream
 
 ## 1.0.1 - 2017-12-18
 
