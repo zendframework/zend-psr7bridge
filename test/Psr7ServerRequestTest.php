@@ -312,12 +312,74 @@ class Psr7ServerRequestTest extends TestCase
 
     public function testNestedFileParametersArePassedCorrectlyToZendRequest()
     {
-        $this->markTestIncomplete('Functionality is written but untested');
+        $uploadedFiles = [
+            'foo-bar' => [
+                new UploadedFile(
+                    __FILE__,
+                    0,
+                    UPLOAD_ERR_NO_FILE,
+                    '',
+                    ''
+                ),
+                new UploadedFile(
+                    __FILE__,
+                    123,
+                    UPLOAD_ERR_OK,
+                    basename(__FILE__),
+                    'plain/text'
+                ),
+            ]
+        ];
+
+        $psr7Request = new ServerRequest([], $uploadedFiles);
+
+        $zendRequest = Psr7ServerRequest::toZend($psr7Request);
+
+        // This needs to be a ZF request
+        $this->assertInstanceOf(Request::class, $zendRequest);
+        $this->assertInstanceOf(ZendRequest::class, $zendRequest);
+
+        // But, more specifically, an instance where we do not use superglobals
+        // to inject it
+        $this->assertInstanceOf(BridgeRequest::class, $zendRequest);
+
+        $test = $zendRequest->getFiles();
+        $this->assertCount(1, $test);
+        $this->assertTrue(isset($test['foo-bar']));
+        $upload = $test->get('foo-bar');
+        $this->assertCount(2, $upload);
+        $this->assertTrue(isset($upload[0]));
+        $this->assertTrue(isset($upload[1]));
+
+        $this->assertArrayHasKey('name', $upload[0]);
+        $this->assertEquals('', $upload[0]['name']);
+        $this->assertArrayHasKey('type', $upload[0]);
+        $this->assertEquals('', $upload[0]['type']);
+        $this->assertArrayHasKey('size', $upload[0]);
+        $this->assertEquals(0, $upload[0]['size']);
+        $this->assertArrayHasKey('tmp_name', $upload[0]);
+        $this->assertEquals('', $upload[0]['tmp_name']);
+        $this->assertArrayHasKey('error', $upload[0]);
+        $this->assertEquals(UPLOAD_ERR_NO_FILE, $upload[0]['error']);
+
+        $this->assertArrayHasKey('name', $upload[1]);
+        $this->assertEquals(basename(__FILE__), $upload[1]['name']);
+        $this->assertArrayHasKey('type', $upload[1]);
+        $this->assertEquals('plain/text', $upload[1]['type']);
+        $this->assertArrayHasKey('size', $upload[1]);
+        $this->assertEquals(123, $upload[1]['size']);
+        $this->assertArrayHasKey('tmp_name', $upload[1]);
+        $this->assertEquals(__FILE__, $upload[1]['tmp_name']);
+        $this->assertArrayHasKey('error', $upload[1]);
+        $this->assertEquals(UPLOAD_ERR_OK, $upload[1]['error']);
     }
 
     public function testCustomHttpMethodsDoNotRaiseAnExceptionDuringConversionToZendRequest()
     {
-        $this->markTestIncomplete('Functionality is written but untested');
+        $psr7Request = new ServerRequest([], [], null, 'CUSTOM_METHOD');
+
+        $zendRequest = Psr7ServerRequest::toZend($psr7Request);
+        $this->assertSame('CUSTOM_METHOD', $zendRequest->getMethod());
     }
 
     public function getResponseData()
