@@ -19,6 +19,7 @@ use Zend\Http\Response as ZendResponse;
 final class Psr7Response
 {
     const URI_TEMP = 'php://temp';
+    const URI_MEMORY = 'php://memory';
 
     /**
      * Convert a PSR-7 response in a Zend\Http\Response
@@ -31,7 +32,7 @@ final class Psr7Response
     {
         $uri = $psr7Response->getBody()->getMetadata('uri');
 
-        if ($uri === static::URI_TEMP) {
+        if ($uri === static::URI_TEMP || $uri === static::URI_MEMORY) {
             $response = sprintf(
                 "HTTP/%s %d %s\r\n%s\r\n%s",
                 $psr7Response->getProtocolVersion(),
