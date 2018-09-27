@@ -78,15 +78,15 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#19](https://github.com/zendframework/zend-psr19bridge/pull/19) adds support
+- [#19](https://github.com/zendframework/zend-psr7bridge/pull/19) adds support
   for PHP 7.1.
 
-- [#19](https://github.com/zendframework/zend-psr19bridge/pull/19) adds support
+- [#19](https://github.com/zendframework/zend-psr7bridge/pull/19) adds support
   for PHP 7.2.
 
 ### Changed
 
-- [#15](https://github.com/zendframework/zend-psr15bridge/pull/15) updates the
+- [#15](https://github.com/zendframework/zend-psr7bridge/pull/15) updates the
   behavior of `Psr7ServerRequest::fromZend()` to check if the request is a
   `Zend\Http\PhpEnvironment\Request` and, if so, use the return value of its
   `getServer()` method to seed the PSR-7 request's server parameters.
@@ -97,10 +97,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#19](https://github.com/zendframework/zend-psr19bridge/pull/19) removes
+- [#19](https://github.com/zendframework/zend-psr7bridge/pull/19) removes
   support for PHP 5.5.
 
-- [#19](https://github.com/zendframework/zend-psr19bridge/pull/19) removes
+- [#19](https://github.com/zendframework/zend-psr7bridge/pull/19) removes
   support for HHVM.
 
 ### Fixed
@@ -111,7 +111,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#8](https://github.com/zendframework/zend-psr8bridge/pull/8) adds and
+- [#8](https://github.com/zendframework/zend-psr7bridge/pull/8) adds and
   publishes the documentation to https://zendframework.github.io/zend-psr7bridge/
 
 ### Deprecated
