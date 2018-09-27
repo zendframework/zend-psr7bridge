@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.1.0 - TBD
+## 1.1.0 - 2018-09-27
 
 ### Added
 
@@ -10,7 +10,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#38](https://github.com/zendframework/zend-psr7bridge/pull/38) updates the zendframework/zend-diactoros constraint to allow either the
+  1.Y or 2.Y series, as they are compatible for the purposes of this package.
 
 ### Deprecated
 
