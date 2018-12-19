@@ -149,12 +149,16 @@ class Psr7ResponseTest extends TestCase
 
     public function testConvertedHeadersAreInstanceOfTheirAppropriateClasses()
     {
-        $psr7Response = (new Response(tmpfile()))->withAddedHeader('Set-Cookie', 'foo=bar');
+        $psr7Response = (new Response(tmpfile()))->withAddedHeader('Set-Cookie', 'foo=bar;domain=.zendframework.com');
         $zendResponse = Psr7Response::toZend($psr7Response);
 
         $cookies = $zendResponse->getHeaders()->get('Set-Cookie');
         $this->assertInstanceOf(Iterator::class, $cookies);
         $this->assertCount(1, $cookies);
-        $this->assertInstanceOf(SetCookie::class, $cookies[0]);
+        /** @var SetCookie $cookie */
+        $cookie = $cookies[0];
+        $this->assertInstanceOf(SetCookie::class, $cookie);
+        $this->assertSame('.zendframework.com', $cookie->getDomain());
+
     }
 }

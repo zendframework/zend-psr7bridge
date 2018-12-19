@@ -49,10 +49,7 @@ final class Psr7Response
         $response = new ZendResponse\Stream();
 
         // copy the headers
-        $zendHeaders = new Headers();
-        foreach ($psr7Response->getHeaders() as $headerName => $headerValues) {
-            $zendHeaders->addHeader(new GenericHeader($headerName, implode('; ', $headerValues)));
-        }
+        $zendHeaders = Headers::fromString(self::psr7HeadersToString($psr7Response));
 
         // set the status
         $response->setStatusCode($psr7Response->getStatusCode());
