@@ -159,6 +159,5 @@ class Psr7ResponseTest extends TestCase
         $cookie = $cookies[0];
         $this->assertInstanceOf(SetCookie::class, $cookie);
         $this->assertSame('.zendframework.com', $cookie->getDomain());
-
     }
 }
