@@ -45,17 +45,10 @@ final class Psr7Response
             return ZendResponse::fromString($response);
         }
 
-        // it's a real file stream:
         $response = new ZendResponse\Stream();
-
-        // copy the headers
         $zendHeaders = Headers::fromString(self::psr7HeadersToString($psr7Response));
-
-        // set the status
         $response->setStatusCode($psr7Response->getStatusCode());
-        // set the headers
         $response->setHeaders($zendHeaders);
-        // set the stream
         $response->setStream(fopen($uri, 'rb'));
 
         return $response;
