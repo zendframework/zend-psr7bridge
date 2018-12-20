@@ -44,7 +44,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#40](https://github.com/zendframework/zend-psr7bridge/pull/40) fixes how headers are translated from PSR-7 to zend-http. Previously, they
+  were always cast to `GenericHeader` instances; now, the bridge uses `Psr7Response::psr7HeadersToString` 
+  to pass them to `Zend\Http\Headers::fromString()`,  ensuring that the more
+  specific zend-http `HeaderInterface` instance types are created.
 
 ## 1.1.0 - 2018-09-27
 

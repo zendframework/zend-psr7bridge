@@ -8,10 +8,12 @@
 namespace ZendTest\Psr7Bridge;
 
 use Error;
+use Iterator;
 use PHPUnit\Framework\TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
+use Zend\Http\Header\SetCookie;
 use Zend\Http\Response as ZendResponse;
 use Zend\Psr7Bridge\Psr7Response;
 
@@ -143,5 +145,19 @@ class Psr7ResponseTest extends TestCase
         $this->expectException(Error::class);
         $this->expectExceptionMessage(sprintf('Call to private %s::__construct', Psr7Response::class));
         new Psr7Response();
+    }
+
+    public function testConvertedHeadersAreInstanceOfTheirAppropriateClasses()
+    {
+        $psr7Response = (new Response(tmpfile()))->withAddedHeader('Set-Cookie', 'foo=bar;domain=.zendframework.com');
+        $zendResponse = Psr7Response::toZend($psr7Response);
+
+        $cookies = $zendResponse->getHeaders()->get('Set-Cookie');
+        $this->assertInstanceOf(Iterator::class, $cookies);
+        $this->assertCount(1, $cookies);
+        /** @var SetCookie $cookie */
+        $cookie = $cookies[0];
+        $this->assertInstanceOf(SetCookie::class, $cookie);
+        $this->assertSame('.zendframework.com', $cookie->getDomain());
     }
 }
