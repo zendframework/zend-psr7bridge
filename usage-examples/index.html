@@ -242,21 +242,20 @@ arguments:</p>
 not need this more process-intensive data. By default, the <code>$shallow</code> flag is
 <code>false</code>, meaning a full conversion is done.</p>
 <h2 id="examples">Examples</h2>
-<h3 id="full-conversion-to-zend-http-request">Full conversion to zend-http request</h3>
-<pre class="codehilite"><code class="language-php">use Zend\Http\PhpEnvironment\Response;
+<h3>Full conversion to zend-http request</h3>
+<p> <pre class=codehilite><code class=language-php>use Zend\Http\PhpEnvironment\Response;
 use Zend\Psr7Bridge\Psr7ServerRequest;
 
 // Assume $controller is a Zend\Mvc\Controller\AbstractController instance.
 $result = $controller-&gt;dispatch(
     Psr7ServerRequest::toZend($request),
     new Response()
-);</code></pre>
-
-<h3 id="shallow-conversion-to-zend-http-request">Shallow conversion to zend-http request</h3>
-<pre class="codehilite"><code class="language-php">use Zend\Psr7Bridge\Psr7ServerRequest;
+);</code></pre></p>
+<h3>Shallow conversion to zend-http request</h3>
+<p> <pre class=codehilite><code class=language-php>use Zend\Psr7Bridge\Psr7ServerRequest;
 
 // Assume $router is a Zend\Router\Http\TreeRouteStack instance.
-$match = $router-&gt;match(Psr7ServerRequest::toZend($request, true));</code></pre>
+$match = $router-&gt;match(Psr7ServerRequest::toZend($request, true));</code></pre></p>
 
 
 
@@ -286,7 +285,7 @@ $match = $router-&gt;match(Psr7ServerRequest::toZend($request, true));</code></p
     <div class="help-wanted">
         <p>
             Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/zendframework/zend-psr7bridge/edit/master/docs/usage-examples.md" target="_blank" class="help-wanted__link">
+            <a href="https://github.com/zendframework/zend-psr7bridge/edit/master/docs/book/usage-examples.md" target="_blank" class="help-wanted__link">
                 Edit this page on GitHub!
             </a>
         </p>
