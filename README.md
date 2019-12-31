@@ -1,5 +1,9 @@
 # zend-psr7bridge
 
+> ## Repository abandoned 2019-12-31
+>
+> This repository has moved to laminas/laminas-psr7bridge.
+
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-psr7bridge.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-psr7bridge)
 [![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-psr7bridge/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-psr7bridge?branch=master)
 
